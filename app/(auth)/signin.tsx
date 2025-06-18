@@ -33,7 +33,6 @@ export default function SignIn() {
       });
       const data = await response.json();
       const {  user, token, success } = data;
-      console.log("data ",data)
       if (success) {
         setUser(user);
         setToken(token);

@@ -35,7 +35,6 @@ useEffect(() => {
 }, [token]);
 
   useEffect(() => {
-    console.log("token ",token)
     if (loading && !user) {
       router.replace("/home");
     }

@@ -13,13 +13,11 @@ const Events = () => {
         method: "GET",
       });
       const data = await response.json();
-      console.log("data ", JSON.stringify(data, null, 2));
       const { statusCode, success, message, events } = data;
       if (success && statusCode === 200) {
         setEvents(events);
       } else {
         Alert.alert("Failed to get Events", message);
-        console.log("data ", data);
       }
     } catch (error: any) {
       Alert.alert("Failed to get Events", error);

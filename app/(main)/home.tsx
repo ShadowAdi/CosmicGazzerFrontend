@@ -16,7 +16,6 @@ const Home = () => {
 
       if (success && statusCode === 200) {
         setPosts(posts);
-        console.log("posts ",posts)
       } else {
         Alert.alert("Failed to get Posts", message);
         console.log("data ", data);
