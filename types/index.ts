@@ -15,10 +15,21 @@ export interface UserInterface {
   location: locationType;
   bio: string;
   savedEvents: string[];
+    _id: string;
 }
 
+export interface UserInterfaceProfile {
+  name: string;
+  email: string;
+  password: string;
+  location: locationType;
+  bio: string;
+  savedEvents: EventResponseInterface[];
+    _id: string;
+}
+
+
 export interface userPostInterface {
-  _id: string;
   bio: string;
   email: string;
   name: string;

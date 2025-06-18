@@ -37,7 +37,14 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-maps",
+        {
+          "requestLocationPermission": true,
+          "locationPermission": "Allow CosmicGazzer to use your location"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

@@ -31,6 +31,15 @@ const MainLayout = () => {
           ),
         }}
       />
+        <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Profile",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="mic-circle" size={size} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 };
