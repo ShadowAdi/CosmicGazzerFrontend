@@ -12,8 +12,24 @@ const MainLayout = () => {
         },
         headerShown: false,
       }}>
-      <Stack.Screen name="home" options={{ title: "Home" }} />
-      <Stack.Screen name="events" options={{ title: "Events" }} />
+     <Tabs.Screen
+        name="home"
+        options={{
+          title: "Home",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="events"
+        options={{
+          title: "Events",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="calendar-outline" size={size} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 };
