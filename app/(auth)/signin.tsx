@@ -7,17 +7,46 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { AuthContextProvider } from "@/store/authStore";
+import { BACKEND_URL } from "@/constants";
+import { saveToken } from "@/utils/Token";
 
 export default function SignIn() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const {fetchUser,token,user,loading,message}=useContext(AuthContextProvider)
+  const { message, setMessage, setToken, setUser } =
+    useContext(AuthContextProvider);
+  const [compLoading, setCompLoading] = useState(false);
 
-  
   const handleSignIn = async () => {
+    setCompLoading(true);
+    try {
+      const response = await fetch(`${BACKEND_URL}auth/login`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json();
+      const {  user, token, success } = data;
+      console.log("data ",data)
+      if (success) {
+        setUser(user);
+        setToken(token);
+        saveToken("token", token);
+        router.push("/home")
+      }
+    } catch (error: any) {
+      console.error("Error in getting login ", error);
+      setMessage(error);
+      Alert.alert("Error in getting login: ", error);
+    } finally {
+      setCompLoading(false);
+    }
   };
 
   return (
@@ -66,12 +95,12 @@ export default function SignIn() {
           />
 
           <TouchableOpacity
-            // style={[styles.spaceButton, loading && styles.disabledButton]}
+            style={[styles.spaceButton, compLoading && styles.disabledButton]}
             onPress={handleSignIn}
-            // disabled={loading}
+            disabled={compLoading}
           >
             <Text style={styles.buttonText}>
-              {/* {loading ? "Logging..." : "Sign In"} */}
+              {compLoading ? "Logging..." : "Sign In"}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => router.push("/(auth)/signup")}>

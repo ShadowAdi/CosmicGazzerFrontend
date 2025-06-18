@@ -1,8 +1,9 @@
-import { Alert, ScrollView } from "react-native";
+import { Alert, FlatList, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import { EventResponseInterface } from "@/types";
-import EventCard from "@/components/EventCard";
 import { BACKEND_URL } from "@/constants";
+import { LinearGradient } from "expo-linear-gradient";
+import EventCard from "@/components/EventCard";
 
 const Events = () => {
   const [events, setEvents] = useState<EventResponseInterface[]>([]);
@@ -12,9 +13,10 @@ const Events = () => {
         method: "GET",
       });
       const data = await response.json();
-      const { statusCode, success, message, posts } = data;
+      console.log("data ", JSON.stringify(data, null, 2));
+      const { statusCode, success, message, events } = data;
       if (success && statusCode === 200) {
-        setEvents(posts);
+        setEvents(events);
       } else {
         Alert.alert("Failed to get Events", message);
         console.log("data ", data);
@@ -28,12 +30,26 @@ const Events = () => {
     GetAllEvents();
   }, []);
   return (
-    <ScrollView>
-      {events.map((event, i) => (
-        <EventCard key={i} event={event} />
-      ))}
-    </ScrollView>
+    <LinearGradient
+      colors={["#0a0a23", "#1a1a3e", "#2d2d5f", "#1a1a3e", "#0a0a23"]}
+      style={styles.container}
+    >
+      <FlatList
+        data={events}
+        keyExtractor={(item) => item._id}
+        contentContainerStyle={{ padding: 16 }}
+        showsVerticalScrollIndicator={false}
+        renderItem={({ item }) => <EventCard event={item} />}
+      />
+    </LinearGradient>
   );
 };
 
 export default Events;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: 52,
+  },
+});

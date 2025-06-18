@@ -17,11 +17,11 @@ export interface UserInterface {
   savedEvents: string[];
 }
 
-export interface userPostInterface{
-  _id:string
-  bio:string
-  email:string
-  name:string
+export interface userPostInterface {
+  _id: string;
+  bio: string;
+  email: string;
+  name: string;
 }
 
 export interface PostInterface {
@@ -39,7 +39,7 @@ export interface PostResponseInterface extends PostInterface {
   dislikesCount: number;
   _id: string;
   createdAt: Date;
-  userId:userPostInterface
+  userId: userPostInterface;
 }
 
 export interface EventInterface {
@@ -49,17 +49,24 @@ export interface EventInterface {
   visibilityScore: number;
   startTime: Date;
   endTime: Date;
-  visibilityRegions: [String];
+  visibilityRegions: string[];
   moonPhase: number;
   source: string;
 }
 
 export interface EventResponseInterface extends EventInterface {
-  postedUserIds: [String];
-  interestedUserIds: [String];
+  postedUserId: {
+    _id: string;
+    name: string;
+    email: string;
+    bio?: string;
+  };
+  interestedUserIds: string[];
+
   _id: string;
   createdAt: Date;
 }
+
 export interface AuthContextType {
   loading: boolean;
   setLoading: (loading: boolean) => void;
@@ -71,4 +78,3 @@ export interface AuthContextType {
   setMessage: (msg: string | null) => void;
   fetchUser: (token: string) => Promise<void>;
 }
-

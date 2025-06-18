@@ -1,10 +1,45 @@
+import { AuthContextProvider } from "@/store/authStore";
+import { getToken } from "@/utils/Token";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { useEffect } from "react";
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import { useContext, useEffect } from "react";
+import { Text, View, StyleSheet, TouchableOpacity, Alert } from "react-native";
 
 export default function Index() {
   const router = useRouter();
+  const { fetchUser, loading, user, setToken, token } =
+    useContext(AuthContextProvider);
+
+  const GetToken = async () => {
+    try {
+      const localToken = await getToken("token");
+      if (localToken) {
+        setToken(localToken);
+      } else {
+        return;
+      }
+    } catch (error: any) {
+      Alert.alert("Error in getting token: ", error);
+      console.log("Error in getting token: ", error);
+    }
+  };
+
+  useEffect(() => {
+    GetToken();
+  }, []);
+
+useEffect(() => {
+  if (token) {
+    fetchUser(token);
+  }
+}, [token]);
+
+  useEffect(() => {
+    console.log("token ",token)
+    if (loading && !user) {
+      router.replace("/home");
+    }
+  }, [loading, user]);
 
   return (
     <LinearGradient
@@ -49,7 +84,6 @@ export default function Index() {
             <TouchableOpacity
               style={styles.spaceButton}
               onPress={() => {
-                console.log("Button Pressed");
                 router.push("/(auth)/signup");
               }}
             >
