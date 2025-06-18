@@ -14,3 +14,6 @@ export async function getToken(key:string) {
     return null;
   }
 }
+export async function removeToken(key:string) {
+  await SecureStore.deleteItemAsync(key)
+}

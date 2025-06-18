@@ -1,4 +1,3 @@
-import { useAuthStore } from "@/store/useAuthStore";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
@@ -6,13 +5,7 @@ import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 
 export default function Index() {
   const router = useRouter();
-    const { token,user } = useAuthStore();
-  
-  useEffect(() => {
-      if (token && user) {
-        router.replace("/home"); // Already logged in
-      }
-    }, [token, user]);
+
   return (
     <LinearGradient
       colors={["#0a0a23", "#1a1a3e", "#2d2d5f", "#1a1a3e", "#0a0a23"]}

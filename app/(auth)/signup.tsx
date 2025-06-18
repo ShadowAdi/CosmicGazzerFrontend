@@ -12,22 +12,15 @@ import {
 } from "react-native";
 import * as Location from "expo-location";
 import { BACKEND_URL } from "@/constants";
-import { useAuthStore } from "@/store/useAuthStore";
 
 export default function SignUp() {
   const router = useRouter();
-  const { token,user } = useAuthStore();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [bio, setBio] = useState("");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-      if (token && user) {
-        router.replace("/home"); // Already logged in
-      }
-    }, [token, user]);
 
   const handleSignUp = async () => {
     setLoading(true);

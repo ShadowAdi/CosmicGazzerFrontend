@@ -8,22 +8,15 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import { useAuthStore } from "@/store/useAuthStore";
 
 export default function SignIn() {
   const router = useRouter();
-  const { login, loading, user, token } = useAuthStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  useEffect(() => {
-    if (token && user) {
-      router.replace("/home"); // Already logged in
-    }
-  }, [token, user]);
+
 
   const handleSignIn = async () => {
-    await login(email, password);
   };
 
   return (
@@ -72,12 +65,12 @@ export default function SignIn() {
           />
 
           <TouchableOpacity
-            style={[styles.spaceButton, loading && styles.disabledButton]}
+            // style={[styles.spaceButton, loading && styles.disabledButton]}
             onPress={handleSignIn}
-            disabled={loading}
+            // disabled={loading}
           >
             <Text style={styles.buttonText}>
-              {loading ? "Logging..." : "Sign In"}
+              {/* {loading ? "Logging..." : "Sign In"} */}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => router.push("/(auth)/signup")}>

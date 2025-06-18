@@ -1,6 +1,8 @@
 import { Stack } from "expo-router";
 import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { View } from "react-native";
+import { useEffect } from "react";
+import { getToken } from "@/utils/Token";
 
 const MyTheme = {
   ...DefaultTheme,
@@ -15,6 +17,7 @@ const MyTheme = {
 };
 
 export default function RootLayout() {
+
   return (
     <ThemeProvider value={MyTheme}>
       <View style={{ flex: 1, backgroundColor: "#121212" }}>
