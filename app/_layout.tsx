@@ -3,6 +3,7 @@ import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { View } from "react-native";
 import { useEffect } from "react";
 import { getToken } from "@/utils/Token";
+import { AuthStoreProvider } from "@/store/authStore";
 
 const MyTheme = {
   ...DefaultTheme,
@@ -17,12 +18,13 @@ const MyTheme = {
 };
 
 export default function RootLayout() {
-
   return (
-    <ThemeProvider value={MyTheme}>
-      <View style={{ flex: 1, backgroundColor: "#121212" }}>
-        <Stack screenOptions={{ headerShown: false }} />
-      </View>
-    </ThemeProvider>
+    <AuthStoreProvider>
+      <ThemeProvider value={MyTheme}>
+        <View style={{ flex: 1, backgroundColor: "#121212" }}>
+          <Stack screenOptions={{ headerShown: false }} />
+        </View>
+      </ThemeProvider>
+    </AuthStoreProvider>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import {
@@ -8,14 +8,15 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
+import { AuthContextProvider } from "@/store/authStore";
 
 export default function SignIn() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const {fetchUser,token,user,loading,message}=useContext(AuthContextProvider)
 
-
-
+  
   const handleSignIn = async () => {
   };
 

@@ -60,13 +60,15 @@ export interface EventResponseInterface extends EventInterface {
   _id: string;
   createdAt: Date;
 }
-
-export interface AuthStore {
-  user: UserInterface | null;
-  token: string | null;
+export interface AuthContextType {
   loading: boolean;
-  setToken: (token: string) => void;
-  getUser: () => Promise<void>;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
+  setLoading: (loading: boolean) => void;
+  user: UserInterface | null;
+  setUser: (user: UserInterface | null) => void;
+  token: string | null;
+  setToken: (token: string | null) => void;
+  message: string | null;
+  setMessage: (msg: string | null) => void;
+  fetchUser: (token: string) => Promise<void>;
 }
+
