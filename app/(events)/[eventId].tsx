@@ -131,7 +131,11 @@ const EventDetails = () => {
           <Ionicons name="arrow-back" size={24} color="white" />
         </TouchableOpacity>
         <Text style={styles.title}>{event.name}</Text>
-        <View style={{ width: 24 }} />
+         {/* {!loading && user && event.postedUserId._id === user?._id && (
+                  <TouchableOpacity onPress={handleDelete}>
+                    <Ionicons name="trash-outline" size={24} color="#FF6B6B" />
+                  </TouchableOpacity>
+                )} */}
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>

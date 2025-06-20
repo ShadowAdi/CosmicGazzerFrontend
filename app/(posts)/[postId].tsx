@@ -15,13 +15,32 @@ import { BACKEND_URL } from "@/constants";
 import { AuthContext } from "@/store/authStore";
 import { PostResponseInterface } from "@/types";
 import MapView, { Marker } from "react-native-maps";
+import { getToken } from "@/utils/Token";
 
 const SinglePost = () => {
   const { postId } = useLocalSearchParams();
   const [post, setPost] = useState<PostResponseInterface | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-  const { token } = useContext(AuthContext);
+  const { token, user, fetchUser, setToken } = useContext(AuthContext);
+
+  const GetToken = async () => {
+    try {
+      const localToken = await getToken("token");
+      if (localToken) {
+        setToken(localToken);
+      } else {
+        return;
+      }
+    } catch (error: any) {
+      Alert.alert("Error in getting token: ", error);
+      console.log("Error in getting token: ", error);
+    }
+  };
+
+  useEffect(() => {
+    GetToken();
+  }, []);
 
   const fetchPost = async () => {
     try {
@@ -47,6 +66,18 @@ const SinglePost = () => {
       fetchPost();
     }
   }, [postId, token]);
+
+  useEffect(() => {
+    if (token) {
+      fetchUser(token);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (loading && !user) {
+      router.replace("/home");
+    }
+  }, [loading, user]);
 
   // Handle like action
   const handleLike = async () => {
@@ -116,6 +147,43 @@ const SinglePost = () => {
     });
   };
 
+  const handleDelete = async () => {
+    Alert.alert(
+      "Delete Post",
+      "Are you sure you want to delete this post?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              const response = await fetch(
+                `${BACKEND_URL}posts/post/${postId}`,
+                {
+                  method: "DELETE",
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              );
+              const data = await response.json();
+              if (data.success) {
+                Alert.alert("Success", "Post deleted successfully");
+                router.back(); // Navigate back after deletion
+              } else {
+                Alert.alert("Error", data.message || "Failed to delete post");
+              }
+            } catch (error: any) {
+              Alert.alert("Error", error.message || "Failed to delete post");
+            }
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
   return (
     <LinearGradient
       colors={["#0a0a23", "#1a1a3e", "#2d2d5f", "#1a1a3e", "#0a0a23"]}
@@ -126,7 +194,13 @@ const SinglePost = () => {
           <Ionicons name="arrow-back" size={24} color="white" />
         </TouchableOpacity>
         <Text style={styles.title}>Post Details</Text>
-        <View style={{ width: 24 }} /> {/* Placeholder for symmetry */}
+
+        {/* Only show delete if user is the author */}
+        {!loading && user && post.userId._id === user?._id && (
+          <TouchableOpacity onPress={handleDelete}>
+            <Ionicons name="trash-outline" size={24} color="#FF6B6B" />
+          </TouchableOpacity>
+        )}
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
