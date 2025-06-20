@@ -1,13 +1,30 @@
-import { StyleSheet, Text, View, Dimensions, Linking } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  Linking,
+  TouchableOpacity,
+} from "react-native";
 import React from "react";
 import { EventResponseInterface } from "@/types";
 import { format } from "date-fns";
+import { useRouter } from "expo-router";
 
 const screenWidth = Dimensions.get("window").width;
 
 const EventCard = ({ event }: { event: EventResponseInterface }) => {
+  const router = useRouter();
   return (
-    <View style={styles.card}>
+    <TouchableOpacity
+      onPress={() => {
+        router.push({
+          pathname: "/(events)/[eventId]",
+          params: { eventId: String(event._id) },
+        });
+      }}
+      style={styles.card}
+    >
       <View style={styles.content}>
         <Text style={styles.title}>{event.name}</Text>
 
@@ -50,12 +67,11 @@ const EventCard = ({ event }: { event: EventResponseInterface }) => {
           🕒 {format(new Date(event.createdAt), "dd MMM, yyyy")}
         </Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
 export default EventCard;
-
 
 const styles = StyleSheet.create({
   card: {

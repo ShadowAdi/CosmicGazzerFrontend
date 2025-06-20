@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const SingleEvent = () => {
+const SinglePost = () => {
   return (
     <View>
-      <Text>SingleEvent</Text>
+      <Text>SinglePost</Text>
     </View>
   )
 }
 
-export default SingleEvent
+export default SinglePost
 
 const styles = StyleSheet.create({})
