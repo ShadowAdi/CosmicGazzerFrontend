@@ -105,11 +105,17 @@ const PostCard = ({
         <View style={styles.statsRow}>
           <Text style={styles.meta}>😶‍🌫️ {visibilityScore}</Text>
           <TouchableOpacity
+             onPress={()=>{
+            handleLike()
+          }}
             style={{ display: "flex", alignItems: "center", rowGap: 6 }}
           >
             <Text style={styles.meta}>👍 {likesCount}</Text>
           </TouchableOpacity>
           <TouchableOpacity
+          onPress={()=>{
+            handleDislike()
+          }}
             style={{ display: "flex", alignItems: "center", rowGap: 6 }}
           >
             <Text style={styles.meta}>👎 {dislikesCount}</Text>
