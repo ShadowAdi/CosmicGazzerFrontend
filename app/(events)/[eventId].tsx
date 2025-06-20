@@ -121,6 +121,43 @@ const EventDetails = () => {
     }
   };
 
+  const handleDelete = async () => {
+    Alert.alert(
+      "Delete Event",
+      "Are you sure you want to delete this event?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              const response = await fetch(
+                `${BACKEND_URL}cosmic-events/delete/${eventId}`,
+                {
+                  method: "DELETE",
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              );
+              const data = await response.json();
+              if (data.success) {
+                Alert.alert("Success", "Event deleted successfully");
+                router.back(); // Navigate back after deletion
+              } else {
+                Alert.alert("Error", data.message || "Failed to delete Event");
+              }
+            } catch (error: any) {
+              Alert.alert("Error", error.message || "Failed to delete Event");
+            }
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
   return (
     <LinearGradient
       colors={["#0a0a23", "#1a1a3e", "#2d2d5f", "#1a1a3e", "#0a0a23"]}
@@ -131,11 +168,11 @@ const EventDetails = () => {
           <Ionicons name="arrow-back" size={24} color="white" />
         </TouchableOpacity>
         <Text style={styles.title}>{event.name}</Text>
-         {/* {!loading && user && event.postedUserId._id === user?._id && (
-                  <TouchableOpacity onPress={handleDelete}>
-                    <Ionicons name="trash-outline" size={24} color="#FF6B6B" />
-                  </TouchableOpacity>
-                )} */}
+        {!loading && user && event.postedUserId._id === user?._id && (
+          <TouchableOpacity onPress={handleDelete}>
+            <Ionicons name="trash-outline" size={24} color="#FF6B6B" />
+          </TouchableOpacity>
+        )}
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
