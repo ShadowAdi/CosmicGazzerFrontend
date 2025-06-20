@@ -187,11 +187,12 @@ const EventDetails = () => {
           <Text style={styles.sectionTitle}>Posted By</Text>
           <TouchableOpacity
             style={styles.userCard}
-            onPress={() =>
-              event?.postedUserId?._id
-                ? router.navigate(`/profile/${event.postedUserId._id}` as never)
-                : null
-            }
+            onPress={() => {
+              router.push({
+                pathname: "/(profile)/[profileId]",
+                params: { profileId: String(event.postedUserId._id) },
+              });
+            }}
             disabled={!event?.postedUserId?._id}
           >
             <View style={styles.userInfo}>

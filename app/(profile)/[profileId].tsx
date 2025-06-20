@@ -11,12 +11,13 @@ import { LinearGradient } from "expo-linear-gradient";
 import { UserInterfaceProfile } from "@/types";
 import { BACKEND_URL } from "@/constants";
 import MapView, { Marker } from "react-native-maps";
-import { AuthContext } from "@/store/authStore";
 import EventCardProfile from "@/components/EventCardProfile";
 import { useLocalSearchParams } from "expo-router";
 
 const OtherUserProfile = () => {
   const { profileId } = useLocalSearchParams();
+
+  console.log("profile id ",profileId)
 
   const [userDetails, setUserDetails] = useState<UserInterfaceProfile | null>(
     null

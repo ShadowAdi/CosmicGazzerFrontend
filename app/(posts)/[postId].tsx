@@ -219,11 +219,12 @@ const SinglePost = () => {
           <Text style={styles.sectionTitle}>Posted By</Text>
           <TouchableOpacity
             style={styles.userCard}
-            onPress={() =>
-              post.userId?._id
-                ? router.navigate(`/profile/${post.userId._id}` as never)
-                : null
-            }
+            onPress={() => {
+              router.push({
+                pathname: "/(profile)/[profileId]",
+                params: { profileId: String(post.userId._id) },
+              });
+            }}
             disabled={!post.userId?._id}
           >
             <Text style={styles.userName}>

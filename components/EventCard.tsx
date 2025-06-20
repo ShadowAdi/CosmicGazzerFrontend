@@ -15,7 +15,6 @@ const screenWidth = Dimensions.get("window").width;
 
 const EventCard = ({ event }: { event: EventResponseInterface }) => {
   const router = useRouter();
-  console.log("profile event ",event)
   return (
     <TouchableOpacity
       onPress={() => {
