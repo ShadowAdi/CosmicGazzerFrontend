@@ -24,15 +24,12 @@ const SinglePost = () => {
 
   const fetchPost = async () => {
     try {
-      const response = await fetch(`${BACKEND_URL}posts/${postId}`, {
+      const response = await fetch(`${BACKEND_URL}posts/post/${postId}`, {
         method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       });
       const data = await response.json();
       if (data.success && data.statusCode === 200) {
-        setPost(data.post);
+        setPost(data.findPost);
       } else {
         Alert.alert("Error", data.message || "Failed to fetch post details");
       }
@@ -52,15 +49,15 @@ const SinglePost = () => {
   // Handle like action
   const handleLike = async () => {
     try {
-      const response = await fetch(`${BACKEND_URL}posts/${postId}/like`, {
-        method: "POST",
+      const response = await fetch(`${BACKEND_URL}posts/post/like/${postId}`, {
+        method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       const data = await response.json();
       if (data.success) {
-        Alert.alert("Success", "Post liked!");
+        Alert.alert("Success", data?.message);
         fetchPost(); // Refresh post to update likes count
       } else {
         Alert.alert("Error", data.message || "Failed to like post");
@@ -73,15 +70,18 @@ const SinglePost = () => {
   // Handle dislike action
   const handleDislike = async () => {
     try {
-      const response = await fetch(`${BACKEND_URL}posts/${postId}/dislike`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `${BACKEND_URL}posts/post/dislike/${postId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       const data = await response.json();
       if (data.success) {
-        Alert.alert("Success", "Post disliked!");
+        Alert.alert("Success", data?.message);
         fetchPost(); // Refresh post to update dislikes count
       } else {
         Alert.alert("Error", data.message || "Failed to dislike post");
@@ -162,7 +162,9 @@ const SinglePost = () => {
           </View>
           <View style={styles.detailRow}>
             <Ionicons name="thumbs-down-outline" size={18} color="#A0A0C0" />
-            <Text style={styles.detailText}>Dislikes: {post.dislikesCount}</Text>
+            <Text style={styles.detailText}>
+              Dislikes: {post.dislikesCount}
+            </Text>
           </View>
           <View style={styles.detailRow}>
             <Ionicons name="sparkles-outline" size={18} color="#A0A0C0" />
@@ -181,7 +183,7 @@ const SinglePost = () => {
             }
             disabled={!post.userId?._id}
           >
-                        <Text style={styles.userName}>
+            <Text style={styles.userName}>
               {post.userId?.name || "Unknown User"}
             </Text>
             <Text style={styles.userBio}>
