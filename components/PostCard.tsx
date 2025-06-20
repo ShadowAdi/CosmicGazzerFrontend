@@ -5,13 +5,21 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import React from "react";
 import { PostResponseInterface } from "@/types";
 import { formatDistanceToNow } from "date-fns";
 import { useRouter } from "expo-router";
+import { BACKEND_URL } from "@/constants";
 
-const PostCard = ({ postData }: { postData: PostResponseInterface }) => {
+const PostCard = ({
+  postData,
+  token,
+}: {
+  postData: PostResponseInterface;
+  token: string | null;
+}) => {
   const {
     imageUrl,
     caption,
@@ -25,6 +33,58 @@ const PostCard = ({ postData }: { postData: PostResponseInterface }) => {
 
   const [longitude, latitude] = location.coordinates;
   const router = useRouter();
+
+  const handleLike = async () => {
+    if (!token) {
+      Alert.alert("Not Authorised", "Token do not found");
+    }
+    try {
+      const response = await fetch(
+        `${BACKEND_URL}posts/post/like/${postData._id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const data = await response.json();
+      if (data.success) {
+        Alert.alert("Success", data?.message);
+      } else {
+        Alert.alert("Error", data.message || "Failed to like post");
+      }
+    } catch (error: any) {
+      Alert.alert("Error", error.message || "Failed to like post");
+    }
+  };
+
+  // Handle dislike action
+  const handleDislike = async () => {
+    if (!token) {
+      Alert.alert("Not Authorised", "Token do not found");
+    }
+
+    try {
+      const response = await fetch(
+        `${BACKEND_URL}posts/post/dislike/${postData._id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const data = await response.json();
+      if (data.success) {
+        Alert.alert("Success", data?.message);
+      } else {
+        Alert.alert("Error", data.message || "Failed to dislike post");
+      }
+    } catch (error: any) {
+      Alert.alert("Error", error.message || "Failed to dislike post");
+    }
+  };
 
   return (
     <TouchableOpacity
@@ -44,8 +104,16 @@ const PostCard = ({ postData }: { postData: PostResponseInterface }) => {
         </Text>
         <View style={styles.statsRow}>
           <Text style={styles.meta}>😶‍🌫️ {visibilityScore}</Text>
-          <Text style={styles.meta}>👍 {likesCount}</Text>
-          <Text style={styles.meta}>👎 {dislikesCount}</Text>
+          <TouchableOpacity
+            style={{ display: "flex", alignItems: "center", rowGap: 6 }}
+          >
+            <Text style={styles.meta}>👍 {likesCount}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{ display: "flex", alignItems: "center", rowGap: 6 }}
+          >
+            <Text style={styles.meta}>👎 {dislikesCount}</Text>
+          </TouchableOpacity>
         </View>
         <Text style={styles.time}>
           {formatDistanceToNow(new Date(createdAt))} ago

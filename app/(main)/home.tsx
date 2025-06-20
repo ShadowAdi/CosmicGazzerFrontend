@@ -89,7 +89,7 @@ const Home = () => {
         keyExtractor={(item) => item._id}
         contentContainerStyle={{ padding: 16 }}
         showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => <PostCard postData={item} />}
+        renderItem={({ item }) => <PostCard postData={item} token={token} />}
       />
     </LinearGradient>
   );
