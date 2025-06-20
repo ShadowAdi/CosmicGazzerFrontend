@@ -7,35 +7,33 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React from "react";
-import { EventResponseInterface } from "@/types";
 import { format } from "date-fns";
-import { useRouter } from "expo-router";
+import { EventResponseInterface } from "@/types";
 
 const screenWidth = Dimensions.get("window").width;
 
-const EventCard = ({ event }: { event: EventResponseInterface }) => {
-  const router = useRouter();
-  console.log("profile event ",event)
+const formatSafeDate = (dateString: string | undefined | null|Date) => {
+  try {
+    if (!dateString) return "Invalid date";
+    const date = new Date(dateString);
+    return format(date, "dd MMM yyyy, hh:mm a");
+  } catch (e) {
+    return "Invalid date";
+  }
+};
+
+const EventCardProfile = ({ event }: { event: EventResponseInterface }) => {
   return (
-    <TouchableOpacity
-      onPress={() => {
-        router.push({
-          pathname: "/(events)/[eventId]",
-          params: { eventId: String(event._id) },
-        });
-      }}
-      style={styles.card}
-    >
+    <View style={styles.card}>
       <View style={styles.content}>
         <Text style={styles.title}>{event.name}</Text>
 
         <Text style={styles.statsRow}>
-          🌠 {event.type}        | 🌕 {event.moonPhase}%
+          🌠 {event.type}        | 🌕 {event.moonPhase ?? 0}%
         </Text>
 
         <Text style={styles.time}>
-          📅 {format(new Date(event.startTime), "dd MMM yyyy, hh:mm a")} -{" "}
-          {format(new Date(event.endTime), "hh:mm a")}
+          📅 {formatSafeDate(event.startTime)} - {formatSafeDate(event.endTime)}
         </Text>
 
         <Text numberOfLines={3} style={styles.description}>
@@ -65,14 +63,14 @@ const EventCard = ({ event }: { event: EventResponseInterface }) => {
           📤 Posted by: {event.postedUserId?.name || "Anonymous"}
         </Text>
         <Text style={styles.footerText}>
-          🕒 {format(new Date(event.createdAt), "dd MMM, yyyy")}
+          🕒 {formatSafeDate(event.createdAt)}
         </Text>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
-export default EventCard;
+export default EventCardProfile;
 
 const styles = StyleSheet.create({
   card: {

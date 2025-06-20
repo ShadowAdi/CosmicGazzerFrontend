@@ -13,6 +13,7 @@ import EventCard from "@/components/EventCard";
 import { BACKEND_URL } from "@/constants";
 import MapView, { Marker } from "react-native-maps";
 import { AuthContext } from "@/store/authStore";
+import EventCardProfile from "@/components/EventCardProfile";
 
 const ProfileScreen = () => {
   const { user, loading } = useContext(AuthContext);
@@ -99,7 +100,7 @@ const ProfileScreen = () => {
         keyExtractor={(item) => item._id}
         contentContainerStyle={{ paddingBottom: 32 }}
         showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => <EventCard event={item} />}
+        renderItem={({ item }) => <EventCardProfile event={item} />}
       />
     </LinearGradient>
   );
