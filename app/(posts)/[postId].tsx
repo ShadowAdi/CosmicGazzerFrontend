@@ -22,7 +22,6 @@ const SinglePost = () => {
   const router = useRouter();
   const { token } = useContext(AuthContext);
 
-  // Fetch post details
   const fetchPost = async () => {
     try {
       const response = await fetch(`${BACKEND_URL}posts/${postId}`, {
