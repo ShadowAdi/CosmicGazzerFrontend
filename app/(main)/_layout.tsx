@@ -31,15 +31,16 @@ const MainLayout = () => {
           ),
         }}
       />
-        <Tabs.Screen
-        name="profile"
-        options={{
-          title: "Profile",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="mic-circle" size={size} color={color} />
-          ),
-        }}
-      />
+<Tabs.Screen
+  name="Profile" // <-- Capital 'P' to match file/folder name
+  options={{
+    title: "Profile",
+    tabBarIcon: ({ color, size }) => (
+      <Ionicons name="person-circle-outline" size={size} color={color} />
+    ),
+  }}
+/>
+
     </Tabs>
   );
 };
