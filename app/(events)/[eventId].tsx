@@ -205,21 +205,23 @@ const EventDetails = () => {
           </TouchableOpacity>
         </View>
 
-        {
-          (event.interestedUserIds.includes(user?._id || "") ? (
-            <View
-              style={[styles.interestedButton, { backgroundColor: "#009e60",borderRadius:10 }]}
-            >
-              <Text style={styles.buttonText}>You are already interested</Text>
-            </View>
-          ) : (
-            <TouchableOpacity
-              style={styles.interestedButton}
-              onPress={handleInterested}
-            >
-              <Text style={styles.buttonText}>Mark as Interested</Text>
-            </TouchableOpacity>
-          ))}
+        {event.interestedUserIds.includes(user?._id || "") ? (
+          <View
+            style={[
+              styles.interestedButton,
+              { backgroundColor: "#009e60", borderRadius: 10 },
+            ]}
+          >
+            <Text style={styles.buttonText}>You are already interested</Text>
+          </View>
+        ) : (
+          <TouchableOpacity
+            style={styles.interestedButton}
+            onPress={handleInterested}
+          >
+            <Text style={styles.buttonText}>Mark as Interested</Text>
+          </TouchableOpacity>
+        )}
       </ScrollView>
     </LinearGradient>
   );
