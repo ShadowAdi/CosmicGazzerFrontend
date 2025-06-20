@@ -50,7 +50,7 @@ export interface PostResponseInterface extends PostInterface {
   dislikesCount: number;
   _id: string;
   createdAt: Date;
-  userId: userPostInterface;
+  userId: UserInterface;
 }
 
 export interface EventInterface {
