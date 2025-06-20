@@ -14,6 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { BACKEND_URL } from "@/constants";
 import { AuthContext } from "@/store/authStore";
 import { PostResponseInterface } from "@/types";
+import MapView, { Marker } from "react-native-maps";
 
 const SinglePost = () => {
   const { postId } = useLocalSearchParams();
@@ -29,6 +30,7 @@ const SinglePost = () => {
       });
       const data = await response.json();
       if (data.success && data.statusCode === 200) {
+        console.log("data ", data.findPost);
         setPost(data.findPost);
       } else {
         Alert.alert("Error", data.message || "Failed to fetch post details");
@@ -149,6 +151,25 @@ const SinglePost = () => {
             <Text style={styles.detailText}>
               Location: {post.location?.coordinates.join(", ") || "N/A"}
             </Text>
+            {post.location?.coordinates && (
+              <MapView
+                style={styles.map}
+                initialRegion={{
+                  latitude: post.location?.coordinates[1],
+                  longitude: post.location?.coordinates[0],
+                  latitudeDelta: 0.05,
+                  longitudeDelta: 0.05,
+                }}
+              >
+                <Marker
+                  coordinate={{
+                    latitude: post.location?.coordinates[1],
+                    longitude: post.location?.coordinates[0],
+                  }}
+                  title="Post Location"
+                />
+              </MapView>
+            )}
           </View>
           <View style={styles.detailRow}>
             <Ionicons name="eye-outline" size={18} color="#A0A0C0" />
@@ -166,10 +187,28 @@ const SinglePost = () => {
               Dislikes: {post.dislikesCount}
             </Text>
           </View>
-          <View style={styles.detailRow}>
-            <Ionicons name="sparkles-outline" size={18} color="#A0A0C0" />
-            <Text style={styles.detailText}>Event: {post.eventId.name}</Text>
-          </View>
+          {post.eventId && (
+            <>
+              <View style={styles.detailRow}>
+                <Ionicons name="sparkles-outline" size={18} color="#A0A0C0" />
+                <Text style={styles.detailText}>
+                  Event Type: {post.eventId.type || "N/A"}
+                </Text>
+              </View>
+              <View style={styles.detailRow}>
+                <Ionicons name="calendar-outline" size={18} color="#A0A0C0" />
+                <Text style={styles.detailText}>
+                  Starts: {formatDate(post.eventId.startTime)}
+                </Text>
+              </View>
+              <View style={styles.detailRow}>
+                <Ionicons name="calendar-outline" size={18} color="#A0A0C0" />
+                <Text style={styles.detailText}>
+                  Ends: {formatDate(post.eventId.endTime)}
+                </Text>
+              </View>
+            </>
+          )}
         </View>
 
         <View style={styles.postedBy}>
@@ -318,5 +357,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center",
     marginTop: 20,
+  },
+  map: {
+    width: "100%",
+    height: 200,
+    marginTop: 16,
+    borderRadius: 16,
+    overflow: "hidden",
   },
 });
