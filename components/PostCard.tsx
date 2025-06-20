@@ -1,7 +1,15 @@
-import { StyleSheet, Text, View, Image, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
 import React from "react";
 import { PostResponseInterface } from "@/types";
 import { formatDistanceToNow } from "date-fns";
+import { useRouter } from "expo-router";
 
 const PostCard = ({ postData }: { postData: PostResponseInterface }) => {
   const {
@@ -16,9 +24,18 @@ const PostCard = ({ postData }: { postData: PostResponseInterface }) => {
   } = postData;
 
   const [longitude, latitude] = location.coordinates;
+  const router = useRouter();
 
   return (
-    <View style={styles.card}>
+    <TouchableOpacity
+      onPress={() => {
+        router.push({
+          pathname: "/(posts)/[postId]",
+          params: { postId: String(postData._id) },
+        });
+      }}
+      style={styles.card}
+    >
       <Image source={{ uri: imageUrl }} style={styles.image} />
       <View style={styles.content}>
         <Text style={styles.caption}>{caption}</Text>
@@ -40,7 +57,7 @@ const PostCard = ({ postData }: { postData: PostResponseInterface }) => {
         <Text style={styles.creatorName}>👤 {userId?.name || "Unknown"}</Text>
         <Text style={styles.creatorEmail}>{userId?.email || "-"}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
