@@ -10,12 +10,12 @@ import React, { useContext, useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import {  UserInterfaceProfile } from "@/types";
 import EventCard from "@/components/EventCard";
-import { AuthContextProvider } from "@/store/authStore";
 import { BACKEND_URL } from "@/constants";
 import MapView, { Marker } from "react-native-maps";
+import { AuthContext } from "@/store/authStore";
 
 const ProfileScreen = () => {
-  const { user, loading } = useContext(AuthContextProvider);
+  const { user, loading } = useContext(AuthContext);
   const [userDetails, setUserDetails] = useState<UserInterfaceProfile | null>(
     null
   );

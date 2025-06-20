@@ -4,7 +4,7 @@ import { getToken } from "@/utils/Token";
 import { createContext, ReactNode, useEffect, useState } from "react";
 import { Alert } from "react-native";
 
-export const AuthContextProvider = createContext<AuthContextType>({
+export const AuthContext = createContext<AuthContextType>({
   loading: false,
   setLoading: () => {},
   user: null,
@@ -57,7 +57,7 @@ export const AuthStoreProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <AuthContextProvider.Provider
+    <AuthContext.Provider
       value={{
         loading,
         setLoading,
@@ -71,6 +71,6 @@ export const AuthStoreProvider = ({ children }: { children: ReactNode }) => {
       }}
     >
       {children}
-    </AuthContextProvider.Provider>
+    </AuthContext.Provider>
   );
 };

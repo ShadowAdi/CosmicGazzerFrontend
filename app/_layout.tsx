@@ -19,12 +19,13 @@ const MyTheme = {
 
 export default function RootLayout() {
   return (
-    <AuthStoreProvider>
+     <AuthStoreProvider>
+
       <ThemeProvider value={MyTheme}>
         <View style={{ flex: 1, backgroundColor: "#121212" }}>
           <Stack screenOptions={{ headerShown: false }} />
         </View>
       </ThemeProvider>
-    </AuthStoreProvider>
+      </AuthStoreProvider>
   );
 }

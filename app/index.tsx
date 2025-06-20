@@ -1,4 +1,4 @@
-import { AuthContextProvider } from "@/store/authStore";
+import { AuthContext } from "@/store/authStore";
 import { getToken } from "@/utils/Token";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
@@ -8,7 +8,7 @@ import { Text, View, StyleSheet, TouchableOpacity, Alert } from "react-native";
 export default function Index() {
   const router = useRouter();
   const { fetchUser, loading, user, setToken, token } =
-    useContext(AuthContextProvider);
+    useContext(AuthContext);
 
   const GetToken = async () => {
     try {
