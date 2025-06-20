@@ -146,11 +146,15 @@ const SinglePost = () => {
               Posted: {formatDate(post.createdAt)}
             </Text>
           </View>
-          <View style={styles.detailRow}>
-            <Ionicons name="location-outline" size={18} color="#A0A0C0" />
-            <Text style={styles.detailText}>
-              Location: {post.location?.coordinates.join(", ") || "N/A"}
-            </Text>
+          <View style={styles.detailRow1}>
+            <View
+              style={{ flexDirection: "row", alignItems: "center", gap: 12 }}
+            >
+              <Ionicons name="location-outline" size={18} color="#A0A0C0" />
+              <Text style={styles.detailText}>
+                Location: {post.location?.coordinates.join(", ") || "N/A"}
+              </Text>
+            </View>
             {post.location?.coordinates && (
               <MapView
                 style={styles.map}
@@ -256,6 +260,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 52,
+    paddingBottom: 18,
   },
   header: {
     paddingHorizontal: 16,
@@ -296,6 +301,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 8,
+  },
+  detailRow1: {
+    flexDirection: "column",
+    alignItems: "flex-start",
+    marginBottom: 8,
+    marginTop: 8,
   },
   detailText: {
     fontSize: 14,
@@ -364,5 +375,6 @@ const styles = StyleSheet.create({
     marginTop: 16,
     borderRadius: 16,
     overflow: "hidden",
+    marginBottom: 18,
   },
 });
