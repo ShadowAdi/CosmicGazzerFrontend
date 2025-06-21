@@ -1,50 +1,58 @@
-# Welcome to your Expo app 👋
+```md
+# Cosmic Gazzer (Frontend)
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Cosmic Gazzer is a mobile-first social media and community platform for stargazers and astronomy enthusiasts. Built with React Native using Expo Router, this app allows users to explore and share cosmic events like meteor showers, lunar eclipses, and more.
 
-## Get started
+## 🌟 Features
 
-1. Install dependencies
+- 🌌 **Explore Posts:** View user-generated content related to various events.
+- 📝 **Create/Delete Posts:** Add insights, experiences, or updates around events.
+- 📅 **Events System:** Create and join stargazing-related events.
+- 👤 **Profile Screen:** See all your posts and events in one place.
+- 🔐 **Authentication:** Sign up, login, logout with secure token handling.
+- 🚀 **Onboarding/Welcome Screen:** Simple index screen with navigation to Sign In/Up.
 
-   ```bash
-   npm install
-   ```
+## 🧱 Tech Stack
 
-2. Start the app
+- **React Native** with **Expo Router**
+- **TypeScript**
+- **Context API** for global state
+- **REST API** integration with backend
+- **LinearGradient UI**, dark theme inspired by night sky
 
-   ```bash
-   npx expo start
-   ```
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## 🚀 Getting Started
 
 ```bash
-npm run reset-project
-```
+npm install
+npx expo start
+````
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Make sure your backend is running at the URL defined in `constants.ts`.
 
-## Learn more
+## 📦 Dependencies
 
-To learn more about developing your project with Expo, look at the following resources:
+* `expo-router`
+* `@react-navigation/native`
+* `@react-native-community/datetimepicker`
+* `react-hook-form`
+* `expo-linear-gradient`
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## 🔐 Auth Flow
 
-## Join the community
+* Tokens are stored securely
+* AuthContext handles fetching user data
+* Private screens check `user` and `token` state
 
-Join our community of developers creating universal apps.
+---
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+### 🧪 Todo / Improvements
+
+* [ ] Image upload for posts
+* [ ] Edit events/posts
+* [ ] Notifications for events
+* [ ] Join/RSVP to events
+
+````
+
+## Demos Can Be Found in the demo folder
