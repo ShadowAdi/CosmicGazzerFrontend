@@ -9,17 +9,55 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-import { AuthContextProvider } from "@/store/authStore";
+import { AuthContext } from "@/store/authStore";
 import { BACKEND_URL } from "@/constants";
-import { saveToken } from "@/utils/Token";
+import { getToken, saveToken } from "@/utils/Token";
 
 export default function SignIn() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { message, setMessage, setToken, setUser } =
-    useContext(AuthContextProvider);
+  const {
+    message,
+    setMessage,
+    setUser,
+    token,
+    loading: authLoading,
+    fetchUser,
+    user,
+    setToken,
+  } = useContext(AuthContext);
   const [compLoading, setCompLoading] = useState(false);
+
+  const GetToken = async () => {
+    try {
+      const localToken = await getToken("token");
+      if (localToken) {
+        setToken(localToken);
+      } else {
+        return;
+      }
+    } catch (error: any) {
+      Alert.alert("Error in getting token: ", error);
+      console.log("Error in getting token: ", error);
+    }
+  };
+
+  useEffect(() => {
+    GetToken();
+  }, []);
+
+  useEffect(() => {
+    if (token) {
+      fetchUser(token);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      router.replace("/home");
+    }
+  }, [authLoading, user]);
 
   const handleSignIn = async () => {
     setCompLoading(true);
@@ -32,12 +70,12 @@ export default function SignIn() {
         body: JSON.stringify({ email, password }),
       });
       const data = await response.json();
-      const {  user, token, success } = data;
+      const { user, token, success } = data;
       if (success) {
         setUser(user);
         setToken(token);
         saveToken("token", token);
-        router.push("/home")
+        router.push("/home");
       }
     } catch (error: any) {
       console.error("Error in getting login ", error);

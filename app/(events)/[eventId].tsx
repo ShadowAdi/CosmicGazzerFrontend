@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { useRouter, useLocalSearchParams } from "expo-router";
+import { useRouter, useLocalSearchParams, useFocusEffect } from "expo-router";
 import { EventResponseInterface, UserInterface } from "@/types"; // Adjust based on your types
 import { BACKEND_URL } from "@/constants";
 import { AuthContext } from "@/store/authStore";
@@ -56,11 +56,15 @@ const EventDetails = () => {
     GetToken();
   }, []);
 
-  useEffect(() => {
-    if (eventId && token) {
-      fetchEvent();
-    }
-  }, [eventId, token]);
+  useEffect(() => {}, [eventId, token]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (eventId && token) {
+        fetchEvent();
+      }
+    }, [])
+  );
 
   useEffect(() => {
     if (token) {

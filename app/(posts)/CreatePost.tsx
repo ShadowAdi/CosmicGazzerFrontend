@@ -9,6 +9,8 @@ import {
   ActivityIndicator,
   Image,
   Dimensions,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
@@ -17,7 +19,7 @@ import { BACKEND_URL } from "@/constants";
 import { AuthContext } from "@/store/authStore";
 import { getToken } from "@/utils/Token";
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 interface Event {
   _id: string;
@@ -66,7 +68,7 @@ const CreatePostScreen = () => {
     try {
       const response = await fetch(`${BACKEND_URL}cosmic-events/filter`);
       const data = await response.json();
-      
+
       if (data?.success) {
         setEvents(data.events || []);
       } else {
@@ -107,22 +109,26 @@ const CreatePostScreen = () => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleLocationChange = (type: 'longitude' | 'latitude', value: string) => {
+  const handleLocationChange = (
+    type: "longitude" | "latitude",
+    value: string
+  ) => {
     const numValue = parseFloat(value) || 0;
-    setForm(prev => ({
+    setForm((prev) => ({
       ...prev,
       location: {
         ...prev.location,
-        coordinates: type === 'longitude' 
-          ? [numValue, prev.location.coordinates[1]]
-          : [prev.location.coordinates[0], numValue]
-      }
+        coordinates:
+          type === "longitude"
+            ? [numValue, prev.location.coordinates[1]]
+            : [prev.location.coordinates[0], numValue],
+      },
     }));
   };
 
   const handleEventSelect = (event: Event) => {
     setSelectedEvent(event);
-    setForm(prev => ({ ...prev, eventId: event._id }));
+    setForm((prev) => ({ ...prev, eventId: event._id }));
     setShowEventPicker(false);
   };
 
@@ -148,12 +154,18 @@ const CreatePostScreen = () => {
       return false;
     }
     if (!form.visibilityScore || isNaN(parseFloat(form.visibilityScore))) {
-      Alert.alert("Validation Error", "Valid visibility score (1-10) is required");
+      Alert.alert(
+        "Validation Error",
+        "Valid visibility score (1-10) is required"
+      );
       return false;
     }
     const visibilityValue = parseFloat(form.visibilityScore);
     if (visibilityValue < 1 || visibilityValue > 10) {
-      Alert.alert("Validation Error", "Visibility score must be between 1 and 10");
+      Alert.alert(
+        "Validation Error",
+        "Visibility score must be between 1 and 10"
+      );
       return false;
     }
     if (imageError) {
@@ -172,7 +184,7 @@ const CreatePostScreen = () => {
 
     setIsSubmitting(true);
     try {
-        const {eventId,...dataSend}=form
+      const { eventId, ...dataSend } = form;
       const response = await fetch(`${BACKEND_URL}posts/${form.eventId}`, {
         method: "POST",
         headers: {
@@ -190,7 +202,7 @@ const CreatePostScreen = () => {
         Alert.alert("Success", "Post Created Successfully");
         router.back();
       } else {
-        console.log("error ", data?.message )
+        console.log("error ", data?.message);
         Alert.alert("Error", data?.message || "Failed to create post");
       }
     } catch (error: any) {
@@ -227,156 +239,166 @@ const CreatePostScreen = () => {
   }
 
   return (
-    <LinearGradient
-      colors={["#0a0a23", "#1a1a3e", "#2d2d5f", "#1a1a3e", "#0a0a23"]}
-      style={styles.container}
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
     >
-      <ScrollView contentContainerStyle={styles.inner}>
-        <Text style={styles.title}>Create New Post</Text>
+      <LinearGradient
+        colors={["#0a0a23", "#1a1a3e", "#2d2d5f", "#1a1a3e", "#0a0a23"]}
+        style={styles.container}
+      >
+        <ScrollView contentContainerStyle={styles.inner}>
+          <Text style={styles.title}>Create New Post</Text>
 
-        {/* Event Selection */}
-        <Text style={styles.label}>Select Event *</Text>
-        <TouchableOpacity
-          style={[styles.input, styles.eventSelector]}
-          onPress={() => setShowEventPicker(!showEventPicker)}
-          disabled={isLoadingEvents}
-        >
-          <Text style={[styles.inputText, !selectedEvent && styles.placeholder]}>
-            {isLoadingEvents 
-              ? "Loading events..."
-              : selectedEvent 
+          {/* Event Selection */}
+          <Text style={styles.label}>Select Event *</Text>
+          <TouchableOpacity
+            style={[styles.input, styles.eventSelector]}
+            onPress={() => setShowEventPicker(!showEventPicker)}
+            disabled={isLoadingEvents}
+          >
+            <Text
+              style={[styles.inputText, !selectedEvent && styles.placeholder]}
+            >
+              {isLoadingEvents
+                ? "Loading events..."
+                : selectedEvent
                 ? `${selectedEvent.name} (${selectedEvent.type})`
-                : "Choose an event..."
-            }
-          </Text>
-          <Text style={styles.dropdownIcon}>{showEventPicker ? "▲" : "▼"}</Text>
-        </TouchableOpacity>
+                : "Choose an event..."}
+            </Text>
+            <Text style={styles.dropdownIcon}>
+              {showEventPicker ? "▲" : "▼"}
+            </Text>
+          </TouchableOpacity>
 
-        {/* Event Picker Dropdown */}
-        {showEventPicker && (
-          <View style={styles.eventDropdown}>
-            {events.length === 0 ? (
-              <Text style={styles.noEventsText}>No events available</Text>
-            ) : (
-              events.map((event) => (
-                <TouchableOpacity
-                  key={event._id}
-                  style={styles.eventOption}
-                  onPress={() => handleEventSelect(event)}
-                >
-                  <Text style={styles.eventName}>{event.name}</Text>
-                  <Text style={styles.eventDetails}>
-                    {event.type} • {new Date(event.startTime).toLocaleDateString()}
-                  </Text>
-                </TouchableOpacity>
-              ))
-            )}
-          </View>
-        )}
-
-        {/* Image URL Input */}
-        <Text style={styles.label}>Image URL *</Text>
-        <TextInput
-          placeholder="https://example.com/your-image.jpg"
-          placeholderTextColor="#aaa"
-          style={styles.input}
-          value={form.imageUrl}
-          onChangeText={handleImageUrlChange}
-          autoCapitalize="none"
-          keyboardType="url"
-        />
-
-        {/* Image Preview */}
-        {form.imageUrl.trim() && (
-          <View style={styles.imagePreviewContainer}>
-            <Text style={styles.label}>Image Preview</Text>
-            {imageLoading && (
-              <View style={styles.imageLoadingContainer}>
-                <ActivityIndicator size="small" color="#4A90E2" />
-                <Text style={styles.imageLoadingText}>Loading image...</Text>
-              </View>
-            )}
-            <Image
-              source={{ uri: form.imageUrl }}
-              style={styles.imagePreview}
-              onLoad={() => setImageLoading(false)}
-              onError={() => {
-                setImageLoading(false);
-                setImageError(true);
-              }}
-            />
-            {imageError && (
-              <Text style={styles.imageErrorText}>
-                Failed to load image. Please check the URL.
-              </Text>
-            )}
-          </View>
-        )}
-
-        {/* Caption */}
-        <Text style={styles.label}>Caption *</Text>
-        <TextInput
-          placeholder="Share your cosmic observation..."
-          placeholderTextColor="#aaa"
-          style={[styles.input, styles.textArea]}
-          multiline
-          numberOfLines={4}
-          value={form.caption}
-          onChangeText={(text) => handleChange("caption", text)}
-        />
-
-        {/* Location Coordinates */}
-        <Text style={styles.label}>Location (Optional)</Text>
-        <View style={styles.coordinatesContainer}>
-          <View style={styles.coordinateInput}>
-            <Text style={styles.coordinateLabel}>Longitude</Text>
-            <TextInput
-              placeholder="0.0"
-              placeholderTextColor="#aaa"
-              style={styles.input}
-              keyboardType="numeric"
-              value={form.location.coordinates[0].toString()}
-              onChangeText={(text) => handleLocationChange('longitude', text)}
-            />
-          </View>
-          <View style={styles.coordinateInput}>
-            <Text style={styles.coordinateLabel}>Latitude</Text>
-            <TextInput
-              placeholder="0.0"
-              placeholderTextColor="#aaa"
-              style={styles.input}
-              keyboardType="numeric"
-              value={form.location.coordinates[1].toString()}
-              onChangeText={(text) => handleLocationChange('latitude', text)}
-            />
-          </View>
-        </View>
-
-        {/* Visibility Score */}
-        <Text style={styles.label}>Visibility Score (1-10) *</Text>
-        <TextInput
-          placeholder="Rate the visibility from 1 (poor) to 10 (excellent)"
-          placeholderTextColor="#aaa"
-          style={styles.input}
-          keyboardType="numeric"
-          value={form.visibilityScore}
-          onChangeText={(text) => handleChange("visibilityScore", text)}
-        />
-
-        {/* Submit Button */}
-        <TouchableOpacity 
-          style={[styles.button, isSubmitting && styles.buttonDisabled]} 
-          onPress={handleSubmit}
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? (
-            <ActivityIndicator size="small" color="#fff" />
-          ) : (
-            <Text style={styles.buttonText}>Create Post</Text>
+          {/* Event Picker Dropdown */}
+          {showEventPicker && (
+            <View style={styles.eventDropdown}>
+              {events.length === 0 ? (
+                <Text style={styles.noEventsText}>No events available</Text>
+              ) : (
+                events.map((event) => (
+                  <TouchableOpacity
+                    key={event._id}
+                    style={styles.eventOption}
+                    onPress={() => handleEventSelect(event)}
+                  >
+                    <Text style={styles.eventName}>{event.name}</Text>
+                    <Text style={styles.eventDetails}>
+                      {event.type} •{" "}
+                      {new Date(event.startTime).toLocaleDateString()}
+                    </Text>
+                  </TouchableOpacity>
+                ))
+              )}
+            </View>
           )}
-        </TouchableOpacity>
-      </ScrollView>
-    </LinearGradient>
+
+          {/* Image URL Input */}
+          <Text style={styles.label}>Image URL *</Text>
+          <TextInput
+            placeholder="https://example.com/your-image.jpg"
+            placeholderTextColor="#aaa"
+            style={styles.input}
+            value={form.imageUrl}
+            onChangeText={handleImageUrlChange}
+            autoCapitalize="none"
+            keyboardType="url"
+          />
+
+          {/* Image Preview */}
+          {form.imageUrl.trim() && (
+            <View style={styles.imagePreviewContainer}>
+              <Text style={styles.label}>Image Preview</Text>
+              {imageLoading && (
+                <View style={styles.imageLoadingContainer}>
+                  <ActivityIndicator size="small" color="#4A90E2" />
+                  <Text style={styles.imageLoadingText}>Loading image...</Text>
+                </View>
+              )}
+              <Image
+                source={{ uri: form.imageUrl }}
+                style={styles.imagePreview}
+                onLoad={() => setImageLoading(false)}
+                onError={() => {
+                  setImageLoading(false);
+                  setImageError(true);
+                }}
+              />
+              {imageError && (
+                <Text style={styles.imageErrorText}>
+                  Failed to load image. Please check the URL.
+                </Text>
+              )}
+            </View>
+          )}
+
+          {/* Caption */}
+          <Text style={styles.label}>Caption *</Text>
+          <TextInput
+            placeholder="Share your cosmic observation..."
+            placeholderTextColor="#aaa"
+            style={[styles.input, styles.textArea]}
+            multiline
+            numberOfLines={4}
+            value={form.caption}
+            onChangeText={(text) => handleChange("caption", text)}
+          />
+
+          {/* Location Coordinates */}
+          <Text style={styles.label}>Location (Optional)</Text>
+          <View style={styles.coordinatesContainer}>
+            <View style={styles.coordinateInput}>
+              <Text style={styles.coordinateLabel}>Longitude</Text>
+              <TextInput
+                placeholder="0.0"
+                placeholderTextColor="#aaa"
+                style={styles.input}
+                keyboardType="numeric"
+                value={form.location.coordinates[0].toString()}
+                onChangeText={(text) => handleLocationChange("longitude", text)}
+              />
+            </View>
+            <View style={styles.coordinateInput}>
+              <Text style={styles.coordinateLabel}>Latitude</Text>
+              <TextInput
+                placeholder="0.0"
+                placeholderTextColor="#aaa"
+                style={styles.input}
+                keyboardType="numeric"
+                value={form.location.coordinates[1].toString()}
+                onChangeText={(text) => handleLocationChange("latitude", text)}
+              />
+            </View>
+          </View>
+
+          {/* Visibility Score */}
+          <Text style={styles.label}>Visibility Score (1-10) *</Text>
+          <TextInput
+            placeholder="Rate the visibility from 1 (poor) to 10 (excellent)"
+            placeholderTextColor="#aaa"
+            style={styles.input}
+            keyboardType="numeric"
+            value={form.visibilityScore}
+            onChangeText={(text) => handleChange("visibilityScore", text)}
+          />
+
+          {/* Submit Button */}
+          <TouchableOpacity
+            style={[styles.button, isSubmitting && styles.buttonDisabled]}
+            onPress={handleSubmit}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}>Create Post</Text>
+            )}
+          </TouchableOpacity>
+        </ScrollView>
+      </LinearGradient>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -392,8 +414,8 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   centered: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   title: {
     color: "#fff",
@@ -424,12 +446,12 @@ const styles = StyleSheet.create({
   },
   textArea: {
     height: 100,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
   },
   eventSelector: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   dropdownIcon: {
     color: "#4A90E2",
@@ -464,15 +486,15 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   imagePreview: {
-    width: '100%',
+    width: "100%",
     height: width * 0.6,
     borderRadius: 8,
     backgroundColor: "#2a2a50",
   },
   imageLoadingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     padding: 8,
   },
   imageLoadingText: {
@@ -486,7 +508,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   coordinatesContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 12,
   },
   coordinateInput: {

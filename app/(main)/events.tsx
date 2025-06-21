@@ -6,12 +6,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { EventResponseInterface } from "@/types";
 import { BACKEND_URL } from "@/constants";
 import { LinearGradient } from "expo-linear-gradient";
 import EventCard from "@/components/EventCard";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { AuthContext} from "@/store/authStore";
 import { getToken } from "@/utils/Token";
 
@@ -54,19 +54,25 @@ const Events = () => {
     }
   };
 
+
+
   useEffect(() => {
     GetToken();
   }, []);
 
-  useEffect(() => {
-    GetAllEvents();
-  }, []);
-
-  useEffect(() => {
-    if (loading && token) {
-      fetchUser(token);
+useFocusEffect(
+  useCallback(() => {
+    if (events.length === 0) {
+      GetAllEvents();
     }
-  }, [token,loading]);
+  }, [events])
+);
+
+useEffect(() => {
+  if (token && !user && !loading) {
+    fetchUser(token);
+  }
+}, [token, user, loading, fetchUser]);
 
   const handleCreateEvent = () => {
     router.navigate("CreateEvent" as never);

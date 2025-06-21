@@ -13,7 +13,7 @@ import PostCard from "@/components/PostCard";
 import { LinearGradient } from "expo-linear-gradient";
 import { AuthContext } from "@/store/authStore";
 import { getToken } from "@/utils/Token";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 
 const Home = () => {
   const [posts, setPosts] = useState<PostResponseInterface[]>([]);
@@ -52,20 +52,21 @@ const Home = () => {
       console.log("Error in getting data ", error);
     }
   };
-
-  useEffect(() => {
+useFocusEffect(
+  React.useCallback(() => {
     GetAllPosts();
-  }, []);
+  }, [])
+);
 
   useEffect(() => {
     GetToken();
   }, []);
 
-  useEffect(() => {
-    if (loading && token) {
-      fetchUser(token);
-    }
-  }, [token, loading]);
+useEffect(() => {
+  if (token && !user && !loading) {
+    fetchUser(token);
+  }
+}, [token, user, loading, fetchUser]);
 
   const handlePostEvent = () => {
     router.navigate("CreatePost" as never);
@@ -89,7 +90,7 @@ const Home = () => {
         keyExtractor={(item) => item._id}
         contentContainerStyle={{ padding: 16 }}
         showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => <PostCard postData={item} token={token} />}
+        renderItem={({ item }) => <PostCard postData={item} token={token} GetAllPosts={GetAllPosts} />}
       />
     </LinearGradient>
   );

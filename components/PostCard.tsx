@@ -16,9 +16,11 @@ import { BACKEND_URL } from "@/constants";
 const PostCard = ({
   postData,
   token,
+  GetAllPosts
 }: {
   postData: PostResponseInterface;
   token: string | null;
+  GetAllPosts:()=>void
 }) => {
   const {
     imageUrl,
@@ -51,6 +53,7 @@ const PostCard = ({
       const data = await response.json();
       if (data.success) {
         Alert.alert("Success", data?.message);
+        GetAllPosts()
       } else {
         Alert.alert("Error", data.message || "Failed to like post");
       }
@@ -78,6 +81,7 @@ const PostCard = ({
       const data = await response.json();
       if (data.success) {
         Alert.alert("Success", data?.message);
+        GetAllPosts()
       } else {
         Alert.alert("Error", data.message || "Failed to dislike post");
       }

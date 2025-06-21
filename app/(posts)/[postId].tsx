@@ -9,7 +9,7 @@ import {
   View,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { useRouter, useLocalSearchParams } from "expo-router";
+import { useRouter, useLocalSearchParams, useFocusEffect } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { BACKEND_URL } from "@/constants";
 import { AuthContext } from "@/store/authStore";
@@ -61,11 +61,15 @@ const SinglePost = () => {
     }
   };
 
-  useEffect(() => {
-    if (postId && token) {
-      fetchPost();
-    }
-  }, [postId, token]);
+  useEffect(() => {}, [postId, token]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (postId && token) {
+        fetchPost();
+      }
+    }, [])
+  );
 
   useEffect(() => {
     if (token) {

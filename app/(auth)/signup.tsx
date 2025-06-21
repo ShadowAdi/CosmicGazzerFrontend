@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import {
@@ -8,10 +8,11 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
-  Platform,
 } from "react-native";
 import * as Location from "expo-location";
 import { BACKEND_URL } from "@/constants";
+import { AuthContext } from "@/store/authStore";
+import { getToken } from "@/utils/Token";
 
 export default function SignUp() {
   const router = useRouter();
@@ -21,6 +22,43 @@ export default function SignUp() {
   const [bio, setBio] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const {
+    fetchUser,
+    loading: authLoading,
+    user,
+    setToken,
+    token,
+  } = useContext(AuthContext);
+
+  const GetToken = async () => {
+    try {
+      const localToken = await getToken("token");
+      if (localToken) {
+        setToken(localToken);
+      } else {
+        return;
+      }
+    } catch (error: any) {
+      Alert.alert("Error in getting token: ", error);
+      console.log("Error in getting token: ", error);
+    }
+  };
+
+  useEffect(() => {
+    GetToken();
+  }, []);
+
+  useEffect(() => {
+    if (token) {
+      fetchUser(token);
+    }
+  }, [token]);
+
+useEffect(() => {
+  if (!authLoading && user) {
+    router.replace("/home");
+  }
+}, [authLoading, user]);
 
   const handleSignUp = async () => {
     setLoading(true);
@@ -59,18 +97,17 @@ export default function SignUp() {
       const data = await response.json();
       const { message, success } = data;
       if (success) {
- 
         Alert.alert("Success", message);
         router.push("/(auth)/signin");
-        setBio("")
-        setEmail("")
-        setName("")
-        setPassword("")
+        setBio("");
+        setEmail("");
+        setName("");
+        setPassword("");
       } else {
         Alert.alert("Error", data.message || "Failed to create account.");
       }
     } catch (error) {
-      console.log("Error ",error)
+      console.log("Error ", error);
       Alert.alert("Error", "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
